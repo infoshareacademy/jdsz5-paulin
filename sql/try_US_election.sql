@@ -1,6 +1,8 @@
 --udział przedziału wielowieko <5=5lat,<=18lat i =>65lat z uwgzlędnieniem, udziału kobiet w roku 2014, pozostała cz.to grupa głosujacych
-select area_name,AGE135214 as populacja5lat,SEX255214 as kobiety, percent_rank()over () as udzial_dzieci_2014
+select area_name,AGE135214,AGE295214,AGE775214,100-(AGE295214+AGE775214) as produkcja,PST045214
 from county_facts cf 
+
+
 --group by area_name,AGE135214,SEX255214,PST045214
 
 --AGE295214 as populacja18lat,AGE775214 as  populacja65 pozostałe też bym chciała mmieć w uziale
@@ -65,3 +67,7 @@ from primary_results pr
 group by candidate 
 order by sum(votes) desc 
 
+--ile kategorii
+select count(column_name),3]
+from county_facts_dictionary cfd
+where column_name i
