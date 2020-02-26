@@ -62,3 +62,25 @@ $func$ LANGUAGE sql;
 -- USAGE:
 SELECT * from select_by_column_names('county_facts', 'RHI');
 -- ##################################################
+-- --------------------------------------------------
+-- select_by_multiple_column_names(_tbl regclass, _pattern TEXT[] DEFAULT '{}') - wyświetla select ze wszystkimi kolumnami zawartymi w zmiennej _pattern.
+-- parametr "_tbl" typu REGCLASS znajduje tabele, parametr "_pattern" typu TEXT[] wyszukuje kolumny zawierające część nazwy kolumny np. RHI
+-- Elementy zawarte w tablicy _pattern powinny być ze znakiem %, w innym wypadku nie zostaną znalezione.
+-- --------------------------------------------------
+CREATE OR REPLACE FUNCTION select_by_multiple_column_names(_tbl REGCLASS, _pattern TEXT[] DEFAULT '{}')
+    RETURNS TEXT AS
+$func$
+SELECT format('SELECT %s FROM %s'
+           , string_agg(quote_ident(attname), ', ')
+           , $1)
+FROM pg_attribute
+WHERE attrelid = $1
+  AND attname ILIKE ANY ($2)
+  AND NOT attisdropped
+  AND attnum > 0;
+$func$ LANGUAGE sql;
+
+-- USAGE:
+SELECT *
+from select_by_multiple_column_names('county_facts', ARRAY ['%rhi%', '%vet%']);
+-- ##################################################
