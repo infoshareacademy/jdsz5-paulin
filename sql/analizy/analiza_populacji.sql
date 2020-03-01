@@ -126,3 +126,22 @@ with pop_categories as (SELECT DISTINCT state                                   
                                from pop_percent)
 select *
 from estimate_of_pop_votes;
+
+
+-- Najczesciej wybierani kandydaci z obu partii na podstawie stanu.
+
+select state, party, mode() within group (order by candidate) winners
+from primary_results pr
+         full join county_facts cf
+                   on cf.fips = pr.fips
+where party is not null
+group by state, party;
+
+-- Najczesciej wybierani kandydaci z obu partii na podstawie hrabstwa, wraz ze zdobytymi glosami
+
+select county, party, sum(votes), mode() within group (order by candidate) winners
+from primary_results pr
+         full join county_facts cf
+                   on cf.fips = pr.fips
+where party is not null
+group by county, party, votes;
