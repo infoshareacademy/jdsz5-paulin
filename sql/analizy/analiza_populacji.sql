@@ -145,3 +145,23 @@ from primary_results pr
                    on cf.fips = pr.fips
 where party is not null
 group by county, party, votes;
+
+
+-- Suma glosow bialych ludzi na demokratow w stosunku do populacji w 2010 roku
+
+select state, sum(pop010210 * (RHI125214 / 100))::int
+from county_facts cf
+         join primary_results pr on pr.fips = cf.fips
+where party ilike '%democrat%'
+group by state
+order by state;
+
+
+-- Suma glosow bialych ludzi na republikanow w stosunku do populacji w 2010 roku
+
+select state, sum(pop010210 * (RHI125214 / 100))::int
+from county_facts cf
+         join primary_results pr on pr.fips = cf.fips
+where party ilike '%republican%'
+group by state
+order by state;
