@@ -27,15 +27,6 @@ join county_facts cf on cf.fips =  pr.fips
 where party ilike '%demo%'
 group by 1
 
-select partner,
-avg(kwota_rekompensaty_oryginalna) as srednia,
-stddev(kwota_rekompensaty_oryginalna) as odchylenie,
-variance(kwota_rekompensaty_oryginalna) as wariancja,
-count(1) as ilosc_wnioskow
-from wnioski
-group by partner
-order by ilosc_wnioskow
-
 -- srednia ilosc glosow, wariancja i odchylenie pod kontem narodowosci 
 select party,
 avg(votes) as srednia_ilosc_glosow,
@@ -66,7 +57,7 @@ with primary_results as
 (
 case 
 when votes < 68 then 'niski'
-when votes between 68 and 358 then 'œrednio-niski'
+when votes between 68 and 358 then 'Å“rednio-niski'
 when votes between 359 and 1375 then 'srednio-wysoki'
 when votes > 1375 then 'wysoki'
 else 'inny'
@@ -82,7 +73,7 @@ join
 (
 case 
 when votes < 377 then 'niski'
-when votes between 377 and 921 then 'œrednio-niski'
+when votes between 377 and 921 then 'Å“rednio-niski'
 when votes between 922 and 2387 then 'srednio-wysoki'
 when votes > 2387 then 'wysoki'
 else 'inny'
@@ -97,7 +88,7 @@ on glosy_demo.fips = glosy_repub.fips
 
 select *
 from
--- % udzia³ w wyborach wg narodowosci
+-- % udziaÂ³ w wyborach wg narodowosci
 
 select distinct state, area_name, 
 
@@ -135,7 +126,7 @@ on podzapytanie.fips = pr.fips
 
 
 
--- maksymalne % udzia³y w wyborach w poszczegolnych stanach z podzialem na narodowosc
+-- maksymalne % udziaÂ³y w wyborach w poszczegolnych stanach z podzialem na narodowosc
 select distinct state,
 
 max(cf.RHI125214) as bialy,
@@ -154,7 +145,7 @@ group by 1
 order by state
 
 
--- œredni udzia³ % w wyborach w poszczegolnych stanach z podzialem na narodowosc
+-- Å“redni udziaÂ³ % w wyborach w poszczegolnych stanach z podzialem na narodowosc
 select distinct state, party,
 avg(cf.RHI125214) as bialy,
 avg(cf.RHI225214) as czarny,
@@ -173,7 +164,7 @@ order by state asc
 
 
 
--- najczesciej wystepujacy kandydaci w obu partiach -- DOKOÑCZYÆ Z INNYMI STANAMI!!!!!!!!!!
+-- najczesciej wystepujacy kandydaci w obu partiach -- DOKOÃ‘CZYÃ† Z INNYMI STANAMI!!!!!!!!!!
 select party, mode() within group (order by distinct candidate)
 from primary_results pr
 full join county_facts cf on cf.fips = pr.fips
@@ -194,7 +185,7 @@ from county_facts cf
 join primary_results pr on pr.fips = cf.fips
 where party like 'Republican' 
 
--- korelacje liczby g³osów i narodowoœci
+-- korelacje liczby gÂ³osÃ³w i narodowoÅ“ci
 select 
 corr (votes, RHI125214) as gl_vs_bialy,
 corr (votes, RHI225214) as glo_vs_czarny,
@@ -210,7 +201,7 @@ left join county_facts cf on cf.fips = pr.fips
 
 -- brak silnej korelacji glosy Vs narodowosc
 
--- korelacja liczby g³osów na trumpa i narodowosci
+-- korelacja liczby gÂ³osÃ³w na trumpa i narodowosci
 select 
 corr (votes, RHI125214) as gl_vs_bialy,
 corr (votes, RHI225214) as glo_vs_czarny,
@@ -225,7 +216,7 @@ from primary_results pr
 left join county_facts cf on cf.fips = pr.fips
 where candidate ilike '%trump%'
 
--- wybor kandydata z podzia³em na stany
+-- wybor kandydata z podziaÂ³em na stany
 
 select distinct candidate, state, county
 
