@@ -1,0 +1,5 @@
+czy struktura wieku ma prze³o¿enie na to czy wol¹ demokratów czy republikanów.
+kodowanie zmiennej zale¿nej: 0 - wygrali demokraci, 1- wygrali republikanie.
+tworzenie kategorii po agregatach dla hrabstwa.
+
+
