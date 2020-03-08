@@ -16,7 +16,7 @@ select
 case 
 when age775214<=15 then '1) niski udzial starszych osob'
 when age775214<=20 then '2) sredni udzial'
-else '4) bardzo wysoki'
+else '3) bardzo wysoki'
 end as kategoria, count(*) hrabstwa
 from county_facts
 group by kategoria
