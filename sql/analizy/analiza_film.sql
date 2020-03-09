@@ -11,33 +11,20 @@ from wsad)
 --analiza firm -nierolniczych
 --------------------------------------------------------------------------------
 with wsad as
-         (select pr.state,
-                 pr.county,
-                 pr.votes,
-                 pr.party,
-                 cf.BZA010213                                         as ilo_firm_nierol,
-                 cf.BZA110213                                         as zatrudnienia_nierol,
-                 case
-                     when cf.BZA010213 > 0 then cf.SBO001207 - cf.BZA010213
-                     when cf.BZA010213 = 0
-                         then 0 end                                   as ilo_firm_rol,
-                 cf.BZA115213                                         as zmiana_zatrudnienia_nierol_rok,
-                 cf.SBO001207                                         as ilo_firm,
-                 case
-                     when cf.SBO001207 > 0 then cf.BZA010213 / cf.SBO001207
-                     when cf.SBO001207 = 0
-                         then 0 end::numeric                          as udzial_nierol_firm,
-                 cf.BZA110213 / cf.BZA010213                          as os_na_firma_nierol,
-                 cf.PST045214 - ((cf.AGE295214 / 100) * cf.PST045214 +
-                                 (cf.AGE775214 / 100) * cf.PST045214) as productive_age,
-                 ((cf.BZA110213 / cf.BZA010213) *
-                  ((cf.PST045214 - ((cf.AGE295214 / 100) * cf.PST045214 + (cf.AGE775214 / 100) * cf.PST045214)) /
-                   cf.PST045214)) /
-                 100                                                  as udzial_zatrudnienia_nierol
-          from primary_results pr
-                   join county_facts cf on pr.fips = cf.fips
-          group by pr.state, pr.county, pr.votes, pr.party, cf.pst045214, cf.age295214, cf.age775214, cf.BZA010213,
-                   cf.BZA110213, cf.BZA115213, cf.SBO001207),
+	(select pr.state,pr.county,pr.votes,pr.party,cf.BZA010213 as ilo_firm_nierol,cf.BZA110213,
+	case when cf.BZA010213 > 0 then cf.SBO001207 - cf.BZA010213
+	when cf.BZA010213 = 0 then 0 end as ilo_firm_rol,cf.BZA115213 as zmiana_zatrudnienia_nierol_rok,cf.SBO001207, case
+	when cf.SBO001207 > 0 then cf.BZA010213 / cf.SBO001207
+	when cf.SBO001207 = 0 then 0 end::numeric as udzial_nierol_firm,
+	case when cf.BZA010213 >0 then cf.BZA110213 / cf.BZA010213
+	else 0 end as os_na_firma_nierol,
+	cf.PST045214 - ((cf.AGE295214 / 100) * cf.PST045214 +(cf.AGE775214 / 100) * cf.PST045214) as productive_age,
+	((cf.BZA110213 / cf.BZA010213) *((cf.PST045214 - ((cf.AGE295214 / 100) * cf.PST045214 + (cf.AGE775214 / 100) * cf.PST045214)) /
+	cf.PST045214)) /100  as udzial_zatrudnienia_nierol
+	from primary_results pr
+	join county_facts cf on pr.fips = cf.fips
+	group by pr.state, pr.county, pr.votes, pr.party, cf.pst045214, cf.age295214, cf.age775214, cf.BZA010213,
+	cf.BZA110213, cf.BZA115213, cf.SBO001207),
 --pogrupowanie hrabstw wzg.zmian zatrudnienia 
      zmiany as (
          select case
@@ -71,17 +58,6 @@ with wsad as
 select *, sum(iv) over () suma_iv
 from k4
          --w wyliczen "spadek" jest jedynym ŚREDNIM PREDYKTOREM
-
-
---jako sprawdzenie poprawności podziału kwantyli
-         wskazniki2 as (
-select z.*,stddev(z.liczba_glosow) as std_zmian_gosp
-from zmiany as z
-group by z.liczba_glosow,z.zmiany_zatrudnienia,z.republikanie
-)
-select *
-from wskazniki2
-
          ---------------------------------------------------------------
 --analiza bezrobocia i biedy
 ---------------------------------------------------------------
