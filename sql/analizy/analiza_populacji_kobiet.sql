@@ -3,6 +3,7 @@ from county_facts
          left join primary_results pr on county_facts.fips = pr.fips;
 
 
+
 with k1 as
          (
              select r.fips,
