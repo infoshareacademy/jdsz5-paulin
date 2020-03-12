@@ -8,48 +8,49 @@ unnest(array[0.25, 0.5,0.80,0.9,0.95,0.96,0.98,0.99])
 as rzad_kwantylu
 from wsad)
 --------------------------------------------------------------------------------
---analiza firm -nierolniczych sektora prywatnego
+--analiza firm -nierolniczych
 --------------------------------------------------------------------------------
 with wsad as
-	(select pr.state,pr.county,pr.votes,pr.party,cf.BZA010213 as ilo_firm_nierol,
-	cf.SBO001207 as totall_ilo_firm,
-	cf.BZA115213 as zmiana_zatrudnienia_nierol_rok
+	(select pr.state,pr.county,pr.votes,pr.party,cf.BZA010213 as ilo_firm_nierol,cf.BZA110213,
+	case when cf.BZA010213 > 0 then cf.SBO001207 - cf.BZA010213
+	when cf.BZA010213 = 0 then 0 end as ilo_firm_rol,cf.BZA115213 as zmiana_zatrudnienia_nierol_rok,cf.SBO001207, case
+	when cf.SBO001207 > 0 then cf.BZA010213 / cf.SBO001207
+	when cf.SBO001207 = 0 then 0 end::numeric as udzial_nierol_firm,
+	case when cf.BZA010213 >0 then cf.BZA110213 / cf.BZA010213
+	else 0 end as os_na_firma_nierol,
+	cf.PST045214 - ((cf.AGE295214 / 100) * cf.PST045214 +(cf.AGE775214 / 100) * cf.PST045214) as productive_age,
+	((cf.BZA110213 / cf.BZA010213) *((cf.PST045214 - ((cf.AGE295214 / 100) * cf.PST045214 + (cf.AGE775214 / 100) * cf.PST045214)) /
+	cf.PST045214)) /100  as udzial_zatrudnienia_nierol
 	from primary_results pr
 	join county_facts cf on pr.fips = cf.fips
-	group by pr.state, pr.county, pr.votes, pr.party, cf.BZA010213,cf.BZA110213,cf.SBO001207
-	,cf.BZA115213,cf.pst045214, cf.age295214, cf.age775214),
-
---obrobka as (
---select *, case when w.totall_ilo_firm > 0 then (w.ilo_firm_nierol/w.totall_ilo_firm)
---when w.totall_ilo_firm=0 then 0 end::numeric as udzial_nierol_firm
---from wsad as w)
-
+	group by pr.state, pr.county, pr.votes, pr.party, cf.pst045214, cf.age295214, cf.age775214, cf.BZA010213,
+	cf.BZA110213, cf.BZA115213, cf.SBO001207),
 --pogrupowanie hrabstw wzg.zmian zatrudnienia 
-zmiany as (select case
-when w.zmiana_zatrudnienia_nierol_rok <= 0 then '1) spadek'
-when w.zmiana_zatrudnienia_nierol_rok <= 1.5 then '2) powolny_wzrost'
-when w.zmiana_zatrudnienia_nierol_rok <= 3 then '3) umiarkowany_wzrost'
-else '4) szybki_wzrost' end as zmiany_zatrudnienia_nierol,
-w.county as hrabstwa,
-case when sum(case when w.party like 'Repub%'then w.votes end)>sum(case when w.party like 'Democ%' then w.votes end) then 1 else 0 end republikanie,
-case when sum(case when w.party like 'Repub%'then w.votes end)<sum(case when w.party like 'Democ%' then w.votes end) then 1 else 0 end demokraci
-from wsad as w
-where w.state not in ('Colodrado', 'North Dakota', 'Maine')
-group by zmiana_zatrudnienia_nierol_rok,w.county order by zmiana_zatrudnienia_nierol_rok desc
-),
-suma as (
-select z.zmiany_zatrudnienia_nierol, count(z.hrabstwa) as ilo_hrabstw, sum(republikanie) as republikanie, sum(demokraci) as demokraci  
-from zmiany as z
-where republikanie<>0 or demokraci<>0
-group by z.zmiany_zatrudnienia_nierol),
-
-k2 as
-         (select *, s.republikanie / sum(s.republikanie) over ()::numeric d_republikanie,
-          s.demokraci / sum(s.demokraci) over ()::numeric       d_demokraci
-          from suma as s
-         ),     
+     zmiany as (
+         select case
+                    when w.zmiana_zatrudnienia_nierol_rok < 0 then 'spadek'
+                    when w.zmiana_zatrudnienia_nierol_rok <= 1.3 then 'powolny_wzrost'
+                    when w.zmiana_zatrudnienia_nierol_rok <= 5 then 'umiarkowany_wzrost'
+                    when w.zmiana_zatrudnienia_nierol_rok >= 8.8 then 'szybki_wzrost'
+                    when w.zmiana_zatrudnienia_nierol_rok < 8.8 then 'hiper_wzrost' end as zmiany_zatrudnienia_nierol,
+                sum(w.votes)                                                            as liczba_glosow,
+                sum(case when w.party like 'Repub%' then w.votes end)                      republikanie,
+                sum(case when w.party like 'Democ%' then w.votes end)                      demokraci
+         from wsad as w
+         where w.state not in ('Colodrado', 'North Dakota', 'Maine')
+         group by zmiany_zatrudnienia_nierol
+         order by zmiany_zatrudnienia_nierol
+     ),
+     k2 as
+         (select *,
+                 z.republikanie / sum(z.republikanie) over ()::numeric d_republikanie,
+                 z.demokraci / sum(z.demokraci) over ()::numeric       d_demokraci
+          from zmiany as z
+         ),
      k3 as
-         (select *,ln(d_republikanie / d_demokraci) woe,d_republikanie - d_demokraci     dr_minus_dd
+         (select *,
+                 ln(d_republikanie / d_demokraci) woe,
+                 d_republikanie - d_demokraci     dr_minus_dd
           from k2),
      k4 as
              (select *, woe * dr_minus_dd iv from k3)
@@ -58,7 +59,6 @@ select *, sum(iv) over () suma_iv
 from k4
          --w wyliczen "spadek" jest jedynym ŚREDNIM PREDYKTOREM
          ---------------------------------------------------------------
-
 --analiza bezrobocia i biedy
 ---------------------------------------------------------------
 --do wyznaczeni przedzialow
