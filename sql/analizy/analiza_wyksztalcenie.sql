@@ -1,4 +1,4 @@
---golne zestawienie danych badanych, gdzie
+﻿--golne zestawienie danych badanych, gdzie
 --EDU635213 to High school graduate or higher, percent of persons age 25+, 2009-2013
 -- EDU685213 to Bachelor's degree or higher, percent of persons age 25+, 2009-2013
 
