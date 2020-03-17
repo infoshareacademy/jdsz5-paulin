@@ -25,3 +25,8 @@ W USA podatek katastralny jest wysoki i jest liczony od wartosci nieruchomosci.
 4. Odsetek osob w wieku powyzej 65 lat (SQL-analiza_wg_wieku)
 Wraz ze wzrostem odsetka osob w wieku powyzej 65 lat rosnie przewaga republikanow.
 Odsetek osob starszych jest predyktorem o sredniej sile IV=0,18
+
+5. Odsetek weteranow (SQL - analiza_wg_weteranow)
+Wraz ze wzrostem odsetka weteranow rosnie znaczaco przewaga republikanow. Ta zmienna jest silnym predyktorem IV=0,31.
+
+Taka zaleznosc moze wynikac z programu wyborczego repulikanow, tj. zapewnienie nieograniczonego dostepu do broni obywatelom.
