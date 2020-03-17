@@ -1,10 +1,14 @@
+---------------------------------------------------------------
+--Analiza wg odsetka osob urodzoanych za granica - imigranci
+---------------------------------------------------------------
 with k1 as
 (
 select r.fips,
 case 
-when f.RHI225214<20 then '1) niski udzia³ czarnoskorych'
-when f.RHI225214<40 then '2) sredni udzia³ czarnoskorych'
-else '3) wysoki udzia³ czarnoskorych'
+when f.POP645213<5 then '1) niski udzia³ imigrantow'
+when f.POP645213<10 then '2) sredni udzia³ imigrantow'
+when f.POP645213<20 then '3) wysoki udzia³ imigrantow'
+else '4) bardzo wysoki udzia³ imigrantow'
 end as kategoria,
 case when sum(case when r.party like 'Repub%'then r.votes end)>sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end republikanie,
 case when sum(case when r.party like 'Repub%'then r.votes end)<sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end demokraci
@@ -35,7 +39,3 @@ from k3),
 k5 as
 (select *, woe*dr_minus_dd  iv from k4)
 select *, sum(iv) over() suma_iv from k5
-
-
-
-

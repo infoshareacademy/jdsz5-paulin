@@ -1,10 +1,15 @@
+---------------------------------------------------------------
+--Analiza wg odsetka osob posiadajacych dom na wlasnosc
+---------------------------------------------------------------
 with k1 as
 (
 select r.fips,
 case 
-when f.RHI225214<20 then '1) niski udzia³ czarnoskorych'
-when f.RHI225214<40 then '2) sredni udzia³ czarnoskorych'
-else '3) wysoki udzia³ czarnoskorych'
+when f.HSG445213<60 then '1) odsetek osob posiadajacych dom na wlasnosc do 60%'
+when f.HSG445213<70 then '2) odsetek osob posiadajacych dom na wlasnosc do 70%'
+when f.HSG445213<75 then '3) odsetek osob posiadajacych dom na wlasnosc do 75%'
+when f.HSG445213<80 then '4) odsetek osob posiadajacych dom na wlasnosc do 80%'
+else '5) odsetek osob posiadajacych dom na wlasnosc 80% i wiecej'
 end as kategoria,
 case when sum(case when r.party like 'Repub%'then r.votes end)>sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end republikanie,
 case when sum(case when r.party like 'Repub%'then r.votes end)<sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end demokraci
@@ -35,6 +40,7 @@ from k3),
 k5 as
 (select *, woe*dr_minus_dd  iv from k4)
 select *, sum(iv) over() suma_iv from k5
+
 
 
 

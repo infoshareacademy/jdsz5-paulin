@@ -1,3 +1,6 @@
+---------------------------------------------------------------
+--Analiza wg odsetka osob czarnoskorych lub afroamerykanow
+---------------------------------------------------------------
 with k1 as
 (
 select r.fips,
