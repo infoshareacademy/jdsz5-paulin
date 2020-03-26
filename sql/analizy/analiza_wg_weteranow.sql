@@ -1,13 +1,14 @@
 ---------------------------------------------------------------
---Analiza wg odsetka osob w wieku powyzej 65 lat
+--Analiza wg odsetka weteranow
 ---------------------------------------------------------------
 with k1 as
 (
 select r.fips,
 case 
-when age775214<=15 then '1) niski udzial starszych osob'
-when age775214<=20 then '2) sredni udzial'
-else '3) bardzo wysoki'
+when (VET605213*100)/POP010210::numeric<6 then '1) udzial weteranow do 6%'
+when (VET605213*100)/POP010210::numeric<8 then '2) udzial weteranow do 8%'
+when (VET605213*100)/POP010210::numeric<10 then '3) udzial weteranow do 10%'
+else '4) udzial weteranow pow 10%'
 end as kategoria,
 case when sum(case when r.party like 'Repub%'then r.votes end)>sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end republikanie,
 case when sum(case when r.party like 'Repub%'then r.votes end)<sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end demokraci
@@ -39,5 +40,3 @@ from k3),
 k5 as
 (select *, woe*dr_minus_dd  iv from k4)
 select *, sum(iv) over() suma_iv from k5
-
-
