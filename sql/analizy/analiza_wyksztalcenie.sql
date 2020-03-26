@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+﻿--golne zestawienie danych badanych, gdzie
+>>>>>>> 1f9fdffd1ec46989e382b1a85f847286501197ec
 --EDU635213 to High school graduate or higher, percent of persons age 25+, 2009-2013
 -- EDU685213 to Bachelor's degree or higher, percent of persons age 25+, 2009-2013
 

@@ -1,7 +1,4 @@
----------------------------------------------------------------
---Analiza wg odsetka osob w wieku powyzej 65 lat
----------------------------------------------------------------
-with k1 as
+with a as
 (
 select r.fips,
 case 
@@ -10,17 +7,39 @@ when age775214<=20 then '2) sredni udzial'
 else '3) bardzo wysoki'
 end as kategoria,
 case when sum(case when r.party like 'Repub%'then r.votes end)>sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end republikanie,
+0 demokraci
+from primary_results r
+join county_facts f on r.fips=f.fips
+group by r.fips, kategoria
+having (case when sum(case when r.party like 'Repub%'then r.votes end)>sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end)=1
+limit 1050
+),
+b as
+(
+select r.fips,
+case 
+when age775214<=15 then '1) niski udzial starszych osob'
+when age775214<=20 then '2) sredni udzial'
+else '3) bardzo wysoki'
+end as kategoria,
+0 republikanie,
 case when sum(case when r.party like 'Repub%'then r.votes end)<sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end demokraci
 from primary_results r
 join county_facts f on r.fips=f.fips
-where r.state not in ('Colodrado', 'North Dakota', 'Maine')
-group by r.fips,kategoria
+group by r.fips, kategoria
+having (case when sum(case when r.party like 'Repub%'then r.votes end)<sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end)=1
+),
+k1 as
+(
+select * from a
+union
+select * from b
 ),
 k2 as
 (
 select kategoria, count(fips) liczba_hrabstw, sum(republikanie) republikanie, sum(demokraci) demokraci  
 from k1
-where republikanie is not null or demokraci is not null
+where republikanie<>0 or demokraci<>0
 group by kategoria
 order by kategoria
 ),
@@ -39,5 +58,7 @@ from k3),
 k5 as
 (select *, woe*dr_minus_dd  iv from k4)
 select *, sum(iv) over() suma_iv from k5
+
+
 
 

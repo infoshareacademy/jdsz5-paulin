@@ -13,7 +13,6 @@ case when sum(case when r.party like 'Repub%'then r.votes end)>sum(case when r.p
 case when sum(case when r.party like 'Repub%'then r.votes end)<sum(case when r.party like 'Democ%' then r.votes end) then 1 else 0 end demokraci
 from primary_results r
 join county_facts f on r.fips=f.fips
-where r.state not in ('Colodrado', 'North Dakota', 'Maine')
 group by r.fips,kategoria
 ),
 k2 as
