@@ -36,6 +36,12 @@ where numer =1)
 
 select * from df3
 
+--ilość głosujących
+with ilo_glos as (select sum(pr.glosy) as ilo_glosow_suma 
+FROM (select distinct state, county as stany, sum(votes) as glosy
+	from primary_results
+	group by state,county) as pr)
+
 -----ile stanów republikańskich a ile demokratycznych
 with ogol as (select distinct pr.state, pr.county,
 case when sum(case when pr.party like 'Repub%'then pr.votes end)>sum(case when pr.party like 'Democ%' then pr.votes end) then 1 else 0 end republikanie,
