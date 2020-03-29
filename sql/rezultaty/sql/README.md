@@ -34,7 +34,7 @@
 
 * PODATEK OD NIERUCHOMOŚCI W USA JEST WYSOKI. PROGRAM WYBORCZY REPUBLIKAN ZAKŁADAŁ OBNIŻENIE PODATKÓW. 
 
-##WNIOSKI:
+## WNIOSKI:
 
 | kategoria                                                                                                    | IV kategorii |
 |--------------------------------------------------------------------------------------------------------------|--------------|
