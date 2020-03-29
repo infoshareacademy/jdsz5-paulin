@@ -2,7 +2,7 @@ with k1 as
 (
 select r.fips,
 case 
-when f.RHI225214<20 then '1) niski udzia³ czarnoskorych'
+when f.RHI225214<1 then '1) niski udzia³ czarnoskorych'
 when f.RHI225214<40 then '2) sredni udzia³ czarnoskorych'
 else '3) wysoki udzia³ czarnoskorych'
 end as kategoria,
