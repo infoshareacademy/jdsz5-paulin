@@ -1,13 +1,13 @@
-SBO001207	Total number of firms, 2007
-
-SBO315207	Black-owned firms, percent, 2007
-SBO115207	American Indian- and Alaska Native-owned firms, percent, 2007
-SBO215207	Asian-owned firms, percent, 2007
-SBO515207	Native Hawaiian- and Other Pacific Islander-owned firms, percent, 2007
-SBO415207	Hispanic-owned firms, percent, 2007
-SBO001207 - ((SBO001207 * SBO315207/100) - (SBO001207 * SBO115207/100)	other-owned
-
-SBO315207, SBO115207, SBO215207, SBO515207, SBO415207, SBO015207
+-- SBO001207	Total number of firms, 2007
+--
+-- SBO315207	Black-owned firms, percent, 2007
+-- SBO115207	American Indian- and Alaska Native-owned firms, percent, 2007
+-- SBO215207	Asian-owned firms, percent, 2007
+-- SBO515207	Native Hawaiian- and Other Pacific Islander-owned firms, percent, 2007
+-- SBO415207	Hispanic-owned firms, percent, 2007
+-- SBO001207 - ((SBO001207 * SBO315207/100) - (SBO001207 * SBO115207/100)	other-owned
+--
+-- SBO315207, SBO115207, SBO215207, SBO515207, SBO415207, SBO015207
 
 -- wyniki wyborow wg hrabstwa z podzia³em na firmê - tutaj black_owned
 
