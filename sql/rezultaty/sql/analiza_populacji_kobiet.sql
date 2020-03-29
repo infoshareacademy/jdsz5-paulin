@@ -1,15 +1,20 @@
---Analiza wg udziału osob posiadajacych dom na wlasnosc (creator: Leszek)
+--Analiza wg udziału kobiet (creator: Konrad)
+
+-- Tabela z danymi o udziale kobiet
+
+select sex255214::numeric / 100
+from county_facts
+         left join primary_results pr on county_facts.fips = pr.fips;
+
 
 -- Analiza WOE & IV
+
 with k1 as
          (
              select r.fips,
                     case
-                        when f.HSG445213 < 60 then '1) odsetek osob posiadajacych dom na wlasnosc do 60%'
-                        when f.HSG445213 < 70 then '2) odsetek osob posiadajacych dom na wlasnosc do 70%'
-                        when f.HSG445213 < 75 then '3) odsetek osob posiadajacych dom na wlasnosc do 75%'
-                        when f.HSG445213 < 80 then '4) odsetek osob posiadajacych dom na wlasnosc do 80%'
-                        else '5) odsetek osob posiadajacych dom na wlasnosc 80% i wiecej'
+                        when f.sex255214::numeric / 100 < 0.50 then '1) mniej niż połowa populacji stanowią kobiety'
+                        else '2) więcej niż połowa populacji stanowią kobiety'
                         end as     kategoria,
                     case
                         when sum(case when r.party like 'Repub%' then r.votes end) >
@@ -21,6 +26,7 @@ with k1 as
                         else 0 end demokraci
              from primary_results r
                       join county_facts f on r.fips = f.fips
+             where r.state not in ('Colodrado', 'North Dakota', 'Maine')
              group by r.fips, kategoria
          ),
      k2 as
@@ -47,9 +53,4 @@ with k1 as
      k5 as
              (select *, woe * dr_minus_dd iv from k4)
 select *, sum(iv) over () suma_iv
-from k5
-
-
-
-
-
+from k5;
