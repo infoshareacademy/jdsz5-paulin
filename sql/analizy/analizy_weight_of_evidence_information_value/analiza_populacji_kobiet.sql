@@ -1,4 +1,4 @@
---Analiza wg udziału kobiet (creator: Konrad)
+--Analiza wg udziału kobiet (creator: Leszek, Konrad)
 
 -- Tabela z danymi o udziale kobiet
 
