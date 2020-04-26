@@ -172,3 +172,6 @@ ipython_config.py
 *.csv
 
 python/.idea
+
+python/.ipynb_checkpoints
+python/packages/__pycache__
