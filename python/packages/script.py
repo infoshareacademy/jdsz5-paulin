@@ -1,16 +1,11 @@
-import pandas as pd
-from pandas import DataFrame
-
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import scipy
-
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import scipy.stats as st
 from pandas import Series, DataFrame
 from pandas.core.groupby import GroupBy
 from scipy.stats import ttest_ind
-
-from packages.bcolors import print_accept, print_error
 
 
 class Dataset:
@@ -146,6 +141,45 @@ class Plots:
         plt.show()
 
 
+# ASIA
+class GeneralInfo:
+
+    def __init__(self):
+        self.st = StatisticTests()
+        self.df = self.st.df
+
+    def region_plots(self):
+        fig, ax = plt.subplots(figsize=(20, 10))
+        sns.countplot(self.df.region_txt, ax=ax)
+        plt.xticks(rotation=90, size=15)
+        plt.title('ilość ataków terrorystycznych w poszczególnych regionach')
+
+    def groupby_attack_type(self, attack_type):
+        grouped_count = self.df[['nkill']].where(self.df.attacktype1_txt == attack_type).groupby(
+            self.df.region_txt).count()
+        return grouped_count
+
+    def box_plots(self):
+        attack_types = self.st.get_uniques(["attacktype1_txt"])
+        sum_nkill = self.df[['nkill']].groupby(self.df.region_txt).count()
+        print(attack_types)
+        attacks = list()
+        for attack in attack_types:
+            at = self.df[['nkill']].where(self.df.attacktype1_txt == attack).groupby(self.df.region_txt).count()
+            attacks.append(at)
+
+        r = None
+        for i, attack in enumerate(attacks):
+            if i == 0:
+                r = pd.merge(attacks[i], attacks[i + 1], how='left', left_on=['region_txt'], right_on=['region_txt'])
+            elif i == len(attacks):
+                r = pd.merge(r, sum_nkill, how='left', left_on=['region_txt'], right_on=['region_txt'])
+            else:
+                r = pd.merge(r, attacks[i], how='left', left_on=['region_txt'], right_on=['region_txt'])
+        plot = r.boxplot(rot=90, figsize=(20, 10), fontsize=15)
+        return plot
+
+
 class StatisticTests:
 
     def __init__(self):
@@ -276,17 +310,17 @@ class Victims:
         lcb, ucb = self.dataset.bootstrap_range_of_difference(x, y)
         print(f"result of one test p_value {p_value_by_test} statistic {statistic_by_test}")
         if p_value_bootstrapping_mean > 0.5:
-            print_accept('Result of bootstrapping test is important in {0} simulations'.format(
+            print('Result of bootstrapping test is important in {0} simulations'.format(
                 "{:.1%}".format(p_value_bootstrapping_mean)))
         else:
-            print_error('Result of bootstrapping test is important in {0} simulations'.format(
+            print('Result of bootstrapping test is important in {0} simulations'.format(
                 "{:.1%}".format(p_value_bootstrapping_mean)))
 
         # if p_value_simulation > 0.5:
         #     print_accept('Result of simulation test is important in {0} simulations'.format(
         #         "{:.1%}".format(p_value_simulation)))
         # else:
-        #     print_error('Result of simulation test is important in {0} simulations'.format(
+        #     print('Result of simulation test is important in {0} simulations'.format(
         #         "{:.1%}".format(p_value_simulation)))
         print('Przedział ufności różnic: ({0},{1})'.format(lcb.round(4), ucb.round(4)))
         if lcb < 0 and ucb > 0:
@@ -295,3 +329,97 @@ class Victims:
             info = '0 nie zawiera się w przedziale ufności, więc przyjmujemy różnicę za istotną.'
         print(info)
         return p_value_by_test, p_value_bootstrapping_mean, p_value_simulation, lcb, ucb
+
+
+# PAULINA
+class Propability:
+
+    def __init__(self):
+        self.tests = StatisticTests()
+        self.df = self.tests.df
+
+    # wybranie tylko używanych kolumn
+    def dataset(self):
+        df_pred = self.df['iyear', 'region_txt', 'targtype1_txt', 'weapon']
+        return df_pred
+
+    # definicja po czym bedzie grupowanie (lista)
+    def filtr(self, df_pred, col_name=None, col_val=None):
+        if col_val is None:
+            col_val = ['USA', 'Firearms']
+        if col_name is None:
+            col_name = ['region_txt', 'weapon']
+        mask = (self.dataset()[col_name[0]] == col_val[0]) & (self.dataset()[col_name[1]] == col_val[1])
+        group = df_pred.ix(mask)
+        return group
+
+    # co jest naszym celem do wyznaczenia prawdopodobieństwa
+    def goal(self, group, target):
+        item_predict = group[target].count()
+        return item_predict
+
+    def whole(self, df_pred):
+        item_all = df_pred.count()
+        return item_all
+
+    def possibility(self, goal, item_all):
+        possib = goal / item_all
+        return possib
+
+
+# PAULINA
+class Thesis:
+
+    def __init__(self, x, y):
+        self.tests = StatisticTests()
+        self.df = self.tests.df
+        if len(x) < 60 or len(y) < 60:
+            print('grupa niereprezentatywna do działań statystycznych')
+        elif len(x) > 60 and len(y) > 60:
+            pass
+
+    def dataset(self):
+        df_pred = self.df('iyear', 'region_txt', 'targtype1_txt', 'weapon')
+        return df_pred
+
+    def filtr(self, df_pred, col_name=None, col_val=None, goal=None):
+        if col_val is None:
+            col_val = ['USA', 'Firearms', '1970']
+        if col_name is None:
+            col_name = ['region_txt', 'weapon', 'iyear']
+        if goal is None:
+            goal = df_pred['nkill']
+
+        x = df_pred.loc[(df_pred[col_name[0]] == col_val[0]) & (df_pred[col_name[1]] == col_val[1]) & (
+                df_pred[col_name[2]] == col_val[2]), [goal]]
+        y = df_pred.loc[(df_pred[col_name[0]] == col_val[0]) & (df_pred[col_name[1]] == col_val[1]) & (
+                df_pred[col_name[2]] == col_val[2]), [goal]]
+        return x, y
+
+    def question(self, x, y):
+        print(
+            'W ROKU {} W REGIONIE{} DOSZŁO DO WIEKSZEJ ILOŚCI PRZESTĘPSTW Z UZYCIEM {} NIŻ ZA POMOCĄ {} W REGIONIE {}'.format(
+                x[2], x[0], x[1], y[1], y[0]))
+        # czyli mx>my
+        x_avg = x.mean()
+        x_std = x.std()
+        x_n = len(x)
+        y_avg = y.mean()
+        y_std = y.std()
+        y_n = len(y)
+        alfa = 0.05  # założone do porówanania z pval
+        # tools gorsze niż pozostałe czyli lewostronny obszar krytyczny
+        # hipoteza alternatywna (!=)
+        u = (x_avg - y_avg) / np.sqrt(x_std ** 2 / x_n + y_std ** 2 / y_n)
+        norm = st.norm()
+        pval = norm.cdf(u)
+        print('x_mean:', x_avg)
+        print('y_mean:', y_avg)
+        if pval > alfa:
+            print(
+                'brak mozliwości odrzucenia hipotezy 0: brak różnicy w średniej ilości zabitych zgodnie z zaznaczonymi kategotiami')
+        elif pval < alfa:
+            if x_avg > y_avg:
+                print('')
+        print('statystyka testowa:', u, 'p-value:', pval,
+              'p-val wysokie, brak możliwości odrzucenia hipotezy zerowej, dlatego też hipoteza alternatywna nie jest rozważana')
