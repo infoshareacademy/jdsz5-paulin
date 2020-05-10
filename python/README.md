@@ -7,11 +7,12 @@ Opis funkcjonalności aplikacj
 ##wykresy słupkowe ilości zabitych w zależności od regionów
 ##box-plot rozkładu ilości zabitych w zalezności od regionu (wizualizacja funckji descibe())
 ##wyznaczenie prawdopodobieństwa wystąpienia aktu terroru przy użyciu danej broni do wszystkich aktów w zbiorze danych
+
+
+## sprawdzanie hipotezy : # W ROKU X DOSZŁO DO WIEKSZEJ ILOŚCI PRZESTĘPSTW Z UZYCIEM BRONI PALNEJ NIŻ POBIĆ W REGIONIE Y
 ## testy statystyczne: 
 			dla małej ilości danych n<=30 't-student' 
 			dla dużej ilości danych n>30 "model 3"
-
-## sprawdzanie hipotezy : # W ROKU X DOSZŁO DO WIEKSZEJ ILOŚCI PRZESTĘPSTW Z UZYCIEM BRONI PALNEJ NIŻ POBIĆ W REGIONIE Y
 Użycie
 
 Właściwą aplikacją jest notebook app.ipnb
