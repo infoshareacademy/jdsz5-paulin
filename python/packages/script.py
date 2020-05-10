@@ -423,3 +423,4 @@ class Thesis:
                 print('')
         print('statystyka testowa:', u, 'p-value:', pval,
               'p-val wysokie, brak możliwości odrzucenia hipotezy zerowej, dlatego też hipoteza alternatywna nie jest rozważana')
+        
