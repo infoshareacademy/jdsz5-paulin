@@ -1,0 +1,14 @@
+conda install -c anaconda plotly
+pip install plotly==3.10
+pip install plotly==2.7.0
+
+9GzqplM8DFADoRImC3GW
+
+
+ "username": "leszek.dorozynski",
+    "api_key": "eIua5deWBij9yebVryIz",
+    "proxy_username": "leszek.dorozynski",
+    "proxy_password": "leedo0273",
+    "stream_ids": [8tok67udzk]
+
+https://chart-studio.plotly.com/settings/api
