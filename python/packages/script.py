@@ -141,7 +141,6 @@ class Plots:
         plt.show()
 
 
-# ASIA
 class GeneralInfo:
 
     def __init__(self):
@@ -165,7 +164,7 @@ class GeneralInfo:
         print(attack_types)
         attacks = list()
         for attack in attack_types:
-            at = self.df[['nkill']].where(self.df.attacktype1_txt == attack).groupby(self.df.region_txt).count()
+            at = self.df['nkill'].where(self.df.attacktype1_txt == attack).groupby(self.df.region_txt).count()
             attacks.append(at)
 
         r = None
@@ -331,30 +330,29 @@ class Victims:
         return p_value_by_test, p_value_bootstrapping_mean, p_value_simulation, lcb, ucb
 
 
-# PAULINA
-class Propability:
+class Probability:
 
     def __init__(self):
         self.tests = StatisticTests()
         self.df = self.tests.df
 
-    # wybranie tylko używanych kolumn
     def dataset(self):
-        df_pred = self.df['iyear', 'region_txt', 'targtype1_txt', 'weapon']
+        df_pred = self.df[['iyear', 'region_txt', 'targtype1_txt', 'weaptype1_txt', 'nkill']]
         return df_pred
 
-    # definicja po czym bedzie grupowanie (lista)
     def filtr(self, df_pred, col_name=None, col_val=None):
         if col_val is None:
-            col_val = ['USA', 'Firearms']
+            col_val = ['South America', 'Firearms']
         if col_name is None:
-            col_name = ['region_txt', 'weapon']
+            col_name = ['region_txt', 'weaptype1_txt']
         mask = (self.dataset()[col_name[0]] == col_val[0]) & (self.dataset()[col_name[1]] == col_val[1])
-        group = df_pred.ix(mask)
-        return group
+        group = df_pred.loc[self.dataset()[col_name[0]].str.contains(col_val[0], case=False)].loc[
+            self.dataset()[col_name[1]].str.contains(col_val[1], case=False)]
+        return group, col_name, col_val
 
-    # co jest naszym celem do wyznaczenia prawdopodobieństwa
-    def goal(self, group, target):
+    def goal(self, group, target=None):
+        if target is None:
+            target = ["nkill"]
         item_predict = group[target].count()
         return item_predict
 
@@ -367,60 +365,60 @@ class Propability:
         return possib
 
 
-# PAULINA
 class Thesis:
 
-    def __init__(self, x, y):
+    def __init__(self):
         self.tests = StatisticTests()
         self.df = self.tests.df
-        if len(x) < 60 or len(y) < 60:
-            print('grupa niereprezentatywna do działań statystycznych')
-        elif len(x) > 60 and len(y) > 60:
-            pass
 
     def dataset(self):
-        df_pred = self.df('iyear', 'region_txt', 'targtype1_txt', 'weapon')
+        df_pred = self.df[['iyear', 'region_txt', 'targtype1_txt', 'weaptype1_txt', 'nkill']]
         return df_pred
 
     def filtr(self, df_pred, col_name=None, col_val=None, goal=None):
         if col_val is None:
-            col_val = ['USA', 'Firearms', '1970']
+            col_val = ['South America', 'Firearms', '1970']
         if col_name is None:
-            col_name = ['region_txt', 'weapon', 'iyear']
+            col_name = ['region_txt', 'weaptype1_txt', 'iyear']
         if goal is None:
             goal = df_pred['nkill']
 
-        x = df_pred.loc[(df_pred[col_name[0]] == col_val[0]) & (df_pred[col_name[1]] == col_val[1]) & (
-                df_pred[col_name[2]] == col_val[2]), [goal]]
-        y = df_pred.loc[(df_pred[col_name[0]] == col_val[0]) & (df_pred[col_name[1]] == col_val[1]) & (
-                df_pred[col_name[2]] == col_val[2]), [goal]]
-        return x, y
+        x = df_pred.loc[df_pred[col_name[0]].str.contains(col_val[0], case=False)].loc[
+            df_pred[col_name[1]].str.contains(col_val[1], case=False)].loc[
+            df_pred[col_name[2]].str.contains(col_val[2], case=False)][goal]
+
+        y = df_pred.loc[df_pred[col_name[0]].str.contains(col_val[0], case=False)].loc[
+            df_pred[col_name[1]].str.contains(col_val[1], case=False)].loc[
+            df_pred[col_name[2]].str.contains(col_val[2], case=False)][goal]
+        return x, y, col_name, col_val
 
     def question(self, x, y):
-        print(
-            'W ROKU {} W REGIONIE{} DOSZŁO DO WIEKSZEJ ILOŚCI PRZESTĘPSTW Z UZYCIEM {} NIŻ ZA POMOCĄ {} W REGIONIE {}'.format(
-                x[2], x[0], x[1], y[1], y[0]))
-        # czyli mx>my
-        x_avg = x.mean()
-        x_std = x.std()
-        x_n = len(x)
-        y_avg = y.mean()
-        y_std = y.std()
-        y_n = len(y)
-        alfa = 0.05  # założone do porówanania z pval
-        # tools gorsze niż pozostałe czyli lewostronny obszar krytyczny
-        # hipoteza alternatywna (!=)
-        u = (x_avg - y_avg) / np.sqrt(x_std ** 2 / x_n + y_std ** 2 / y_n)
-        norm = st.norm()
-        pval = norm.cdf(u)
-        print('x_mean:', x_avg)
-        print('y_mean:', y_avg)
-        if pval > alfa:
+        if len(x) < 60 or len(y) < 60:
+            print('grupa niereprezentatywna do działań statystycznych')
+        elif len(x) > 60 and len(y) > 60:
             print(
-                'brak mozliwości odrzucenia hipotezy 0: brak różnicy w średniej ilości zabitych zgodnie z zaznaczonymi kategotiami')
-        elif pval < alfa:
-            if x_avg > y_avg:
-                print('')
-        print('statystyka testowa:', u, 'p-value:', pval,
-              'p-val wysokie, brak możliwości odrzucenia hipotezy zerowej, dlatego też hipoteza alternatywna nie jest rozważana')
-        
+                'W ROKU {} W REGIONIE{} DOSZŁO DO WIEKSZEJ ILOŚCI PRZESTĘPSTW Z UZYCIEM {} NIŻ ZA POMOCĄ {} W REGIONIE {}'.format(
+                    x[2], x[0], x[1], y[1], y[0]))
+            # czyli mx>my
+            x_avg = x.mean()
+            x_std = x.std()
+            x_n = len(x)
+            y_avg = y.mean()
+            y_std = y.std()
+            y_n = len(y)
+            alfa = 0.05  # założone do porówanania z pval
+            # tools gorsze niż pozostałe czyli lewostronny obszar krytyczny
+            # hipoteza alternatywna (!=)
+            u = (x_avg - y_avg) / np.sqrt(x_std ** 2 / x_n + y_std ** 2 / y_n)
+            norm = st.norm()
+            pval = norm.cdf(u)
+            print('x_mean:', x_avg)
+            print('y_mean:', y_avg)
+            if pval > alfa:
+                print(
+                    'brak mozliwości odrzucenia hipotezy 0: brak różnicy w średniej ilości zabitych zgodnie z zaznaczonymi kategotiami')
+            elif pval < alfa:
+                if x_avg > y_avg:
+                    print('')
+            print('statystyka testowa:', u, 'p-value:', pval,
+                  'p-val wysokie, brak możliwości odrzucenia hipotezy zerowej, dlatego też hipoteza alternatywna nie jest rozważana')
