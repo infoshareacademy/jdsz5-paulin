@@ -7,13 +7,35 @@ from pandas import Series, DataFrame
 from pandas.core.groupby import GroupBy
 from scipy.stats import ttest_ind
 from scipy.stats import norm
+import os.path
 
 
 class Dataset:
 
+    def file_exists(self, filename):
+        return os.path.isfile(filename)
+
     # Dataframe load
     def dataset(self):
-        df = pd.read_csv("data/globalterrorism.csv", encoding="ISO-8859-1", low_memory=False)[
+        filename = "data/globalterrorismdb_0718dist.csv"
+        if self.file_exists(filename):
+            df = self.load_df(filename)
+        else:
+            if not os.path.exists("data"):
+                os.makedirs("data")
+            self.download_df()
+            df = self.load_df(filename)
+        return df
+
+    def download_df(self):
+        import kaggle
+        k = kaggle.KaggleApi({"username": "jdsz5paulina", "key": "5277445bf2e6cef9aac564d8f7c5b87d"})
+        k.authenticate()
+        print("kaggle.com: authenticated")
+        k.dataset_download_cli("START-UMD/gtd", unzip=True, path="data")
+
+    def load_df(self, filename):
+        df = pd.read_csv(filename, encoding="ISO-8859-1", low_memory=False)[
             ['iyear', 'imonth', 'iday', 'country_txt', 'region_txt', 'city', 'attacktype1_txt',
              'targtype1_txt', 'weaptype1_txt', 'nkill', 'natlty1_txt']].dropna()
         return df
