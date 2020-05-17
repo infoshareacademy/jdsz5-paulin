@@ -434,7 +434,7 @@ class ResultsModel:
                f"\n t_welch_message={self.t_welch_message}," \
                f"\n t_welch_p_value={self.t_welch_p_value}," \
                f"\n is_poisson_x={self.is_poisson_x}," \
-               f"\n is_poisson_x={self.is_poisson_y}" \
+               f"\n is_poisson_y={self.is_poisson_y}" \
                f"\n ]"
 
 
