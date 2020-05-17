@@ -1,4 +1,4 @@
-Opis ogólny
+# Opis ogólny
 
 Aplikacja pozwala na wizualizację danych dotyczących terroryzmu na świecie w latach 1970-2017 (w bazie danych brak roku 1993). Funkcjonalne widgety pozwalają na filtowanie zbioru danych w poszukiwaniu ilości zabitych w zalezności od interesującego użytkownika roku oraz rodzaju wykorzystanej broni w ataku. 
 
@@ -6,14 +6,14 @@ Aplikacja pozwala na wizualizację danych dotyczących terroryzmu na świecie w 
 https://www.kaggle.com/START-UMD/gtd
 w celu użytkowania aplikacji proszę ściągnąć bazę do tej samej lokalizacji co aplikacja.
 
-Dane ogólne  
+### Dane ogólne  
 
 1. zestawienie wszystkich zmiennych wystepujących w datasecie, wraz z typem zmiennej oraz ilości argumentów.
 2. wykresy słupkowe ilości zabitych w zależności od użytej broni w danym roku na kontynentach. Wyszukiwanie przy użyciu widgetów
 3. wykresy słupkowe ilości ataków w zależności od regionu świata.
 4. box-plot (wizualizacja danych statystycznych: mediana,kwartyle,wielkości podejżane o anormlaność, wielkości odstające/błędy)
 
-Statystyka
+### Statystyka
 
 1. sprawdzenie czy rozkład jest normalny poprzez sprawdzenie wartości p_value (p_val<0 to hipoteza 0 odrzucona. Hipoteza 0 brzmi: badane dane podlegają rozkłądowi normalnemu (rozkład badanych danych =rozkładowi normalnemu) oraz poprzez sprawdzenie czy dane podlegają rozkładowi Poissona (True=rozkład graniczny dwubiegunowy, FALSE= rozkład normalny) Dodatkowo ze względu na charakter danych (zmienne niezależne od siebie/losowe) dokonano wykreślenia gęstości zmiennych dysktertnych  
 
@@ -28,7 +28,7 @@ Na przykład gdy hipotezą zerową jest wartość oczekiwana w populacji {\displ
 
 Właściwą aplikacją jest notebook app.ipnb
 
-Pakiety
+### Pakiety
 
 import matplotlib.pyplot as plt
 import numpy as np
