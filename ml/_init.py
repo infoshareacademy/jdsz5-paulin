@@ -191,9 +191,7 @@ class rest_models:
             print("{0} score = {1}".format(k, test_score))
             results["model_name"].append(k)
             results["test_score"].append(test_score)
-            
-            best_model.to_pickle("./best_model.pkl")
-            load_pickle = pd.read_pickle("./best_model.pkl")
+ 
         return results 
     
     def best_models(self, models, parameters):
@@ -238,8 +236,21 @@ class rest_models:
         load_model = pd.read_pickle("./best_ml_model.pkl")
         
        
-       
-
+  
+    
+    class cross_valid():
+        
+        from sklearn.model_selection import cross_validate
+        
+        last_model = load_model
+        cv_results = cross_validate(last_model, x_norm, y, cv=10)
+        scorer = sklearn.metrics.make_scorer(sklearn.metrics.mean_squared_error)
+        cv_results['test_score']
+        
 class knn_class():
     
-    def best_offerst(self,)
+    def best_offerst(self,):
+        
+        
+        
+        
