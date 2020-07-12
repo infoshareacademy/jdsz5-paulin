@@ -9,6 +9,17 @@
 
 .idea
 
+*/models/*
+*/output/*
+
+*/__pycache__/*
+
+ml/__pycache__/*
+
+ml/models/*
+ml/models_*/*
+ml/output/*
+
 # Icon must end with two \r
 Icon
 
