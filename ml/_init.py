@@ -555,7 +555,6 @@ class Features:
     def uniques(self, df, col):
         if col in df.columns:
             uniq = df[col].unique()
-            print(colored(uniq, "blue"))
             return uniq
 
     def fix_province(self, df, column):
@@ -798,32 +797,18 @@ class Features:
 class Recommendation:
 
     def __init__(self, df, file_name, ball=None):
-        print(f"ball is none: {ball is None}")
         if df is None:
-            df = self.__prepare_df(file_name, pp=True)
-        df.info()
+            df = self.__prepare_df(file_name)
         self.df = self.prepare_df(df)
         self.file_name = file_name
-
-        if ball is None:
-            self.X_train, self.x_test, self.Y_train, self.Y_test = self.prepare_train_test(df)
-            self.train_X_norm, self.test_X_norm = self.prepare_scaling(self.X_train, self.x_test)
-            self.tree = self.prepare_ball(self.train_X_norm)
-            self.dist, self.ind = self.test_ball(self.tree, self.test_X_norm)
-            self.test_index = self.prepare_test_index(self.test_X_norm)
-            self.results_df = self.results_ball(self.ind, self.df, self.test_index)
-            self.summary(self.df, self.results_df, self.x_test, self.test_index)
-            if ball is None:
-                self.save_model(self.tree, f"models/recommendation/{self.file_name}_recomendation_knn")
-        else:
-            self.test_X_norm = self.df.to_numpy()
-            # scalar = MinMaxScaler().fit(self.df)
-            # self.test_X_norm = scalar.transform(self.df)
-            print(colored(self.test_X_norm.shape, "cyan"))
-            self.tree = ball
-            self.dist, self.ind = self.test_ball(self.tree, self.test_X_norm)
-            self.results_df = self.results_ball(self.ind, self.df, self.test_index)
-            self.summary(self.df, self.results_df, self.x_test, self.test_index)
+        self.X_train, self.x_test, self.Y_train, self.Y_test = self.prepare_train_test(df)
+        self.train_X_norm, self.test_X_norm = self.prepare_scaling(self.X_train, self.x_test)
+        self.tree = self.prepare_ball(self.train_X_norm)
+        self.dist, self.ind = self.test_ball(self.tree, self.test_X_norm)
+        self.test_index = self.prepare_test_index(self.test_X_norm)
+        self.results_df = self.results_ball(self.ind, self.df, self.test_index)
+        self.summary(self.df, self.results_df, self.x_test, self.test_index)
+        self.save_model(self.tree, f"models/recommendation/{self.file_name}_recomendation_knn")
 
     def prepare_df(self, df):
         if "main_type_id" in df.columns:
@@ -1122,10 +1107,6 @@ class TTT:
         files = features.paths("data")
         for file in files:
             if "fixed_estates" in file:
-                print(
-                    colored(
-                        f"!!!======================={colored(file, 'green')}{colored('=======================!!!', 'red')}",
-                        "red"))
                 df = features.prepare_df(file)
                 df = features.test_features(df)
                 dropped = []

@@ -280,7 +280,7 @@ class Recommendation:
             price_per_m = round(df.price[id] / df.area_total[id], 1)
             apartment_room_number = df.apartment_room_number[id]
             apartment_floor = df.apartment_floor[id]
-            building_year = df.building_year[id]
+            building_year = int(round(df.building_year[id]))
             results_df = pd.DataFrame(
                 np.array([[price, area_total, price_per_m, apartment_room_number, apartment_floor, building_year]]),
                 columns=['price', 'area_total', 'price_permeter', 'apartment_room_number', 'apartment_floor',
