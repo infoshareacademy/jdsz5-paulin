@@ -1,37 +1,25 @@
-# Temat: US Election
+# Projekty
+
+## SQL
+
+### Temat: US Election
+
 Czy demografia determinuje na kogo ludzie głosują? Przegląd ogólnych statystyk demograficznych, ciekawych przypadków i anomalii
 
-[database source]: https://www.kaggle.com/benhamner/2016-us-election
+## Python
 
-## Struktura projektu
+### Temat: Global Terrorism Database
 
-* sql
-    * analizy - Zbiór analiz, udanych i nieudanych. 
-    * baza_danych - pliki z zapytaniami potrzebnymi do stworzenia bazy danych.
-        * alters_new_tables - altery oraz nowe tabele niedostępne w podstawowej strukturze projektu.
-        * create_tables - create table tworzące podstawową strukturę bazy danych.
-        * full_database - pelna baza danych, create table oraz inserty.
-        * inserts - inserty z podstawowej bazy danych.
-    * pomoce - pliki pomocnicze użyte podczas analiz
-        * correlation
-        * notatki
-        * procedury
-    * rezultaty - Wyniki koncowe z przeprowadzonych analiz.
-        * sql - Pliki sql z pewnymi wynikami.
-        * prezentacja
+Analiza terroryzmu na całym świecie w latach: 1970 - 2017
 
-## Spis dzialan
+## ML
 
-### wstep
+### Temat: Zbiór ofert nieruchomości
 
-* eksploracja danych
+Analiza i predykcja cen nieruchomości na podstawie zbioru ofert z portali nieruchomości
 
-* czyszczenie i obrabianie danych
+## DL
 
-### wnioski
+### Temat: ASL Alphabet
 
-* propozycje korelacji
-	* wyniki glosowania ze wzlędu na wiek, rasę,religie 
-	* gdzie obszary gdzie mała przewaga
-	* podzial glosow ze wzgledu na obszary zurbanizowane i  wiejskie
-
+Predykcja znaków alfabetu migowego na podstawie zbioru obrazów przedstawiających ręce, w których każda z nich reprezentuje inną literę alfabetu. Do predykcji wykorzystano aplikację na system android.
